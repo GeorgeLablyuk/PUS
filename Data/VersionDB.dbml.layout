@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="VersionDB">
+  <DataContextMoniker Name="/VersionDBDataContext" />
+  <nestedChildShapes>
+    <classShape Id="6a9c398b-936e-491b-9138-c502e71373e8" absoluteBounds="5.125, 2, 2, 1.3862939453125">
+      <DataClassMoniker Name="/VersionDBDataContext/tUpdateNumber" />
+      <nestedChildShapes>
+        <elementListCompartment Id="493751c2-f249-4ad4-ac42-2ba85071abf9" absoluteBounds="5.14, 2.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="71bba6a3-b750-48d0-a949-7de2941e014b" absoluteBounds="2.25, 2, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/VersionDBDataContext/AssemblyFile" />
+      <nestedChildShapes>
+        <elementListCompartment Id="67c166ad-cc06-4f93-82eb-5c85348d41ea" absoluteBounds="2.265, 2.46, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="bbcbe873-5094-40a9-b1a8-aff6833a526c" absoluteBounds="5.125, 5.5, 2, 1.9631982421874996">
+      <DataClassMoniker Name="/VersionDBDataContext/tHostUpdateLog" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bb38fa29-14cb-4200-9e1b-7f18c02b24fe" absoluteBounds="5.14, 5.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

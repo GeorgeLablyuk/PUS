@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VersionDB" Class="VersionDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=putra;Initial Catalog=VersionDB;Persist Security Info=True;User ID=psutan" SettingsObjectName="LoaderLGP.Properties.Settings" SettingsPropertyName="VersionDBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tUpdateNumber" Member="tUpdateNumbers">
+    <Type Name="tUpdateNumber">
+      <Column Name="AssemblyProjectID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UpdateNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LastUpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tVersionFiles" Member="AssemblyFiles">
+    <Type Name="AssemblyFile">
+      <Column Name="AssemblyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AssemblyProjectID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyVersion" Type="System.String" DbType="VarChar(32) NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyLength" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyFiles" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Compressed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tHostUpdateLog" Member="tHostUpdateLogs">
+    <Type Name="tHostUpdateLog">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AssemblyProjectID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="HostName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="HostIP" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
+      <Column Name="LastUpdateDate" Type="System.DateTime" DbType="SmallDateTime NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyNames" Type="System.String" DbType="NVarChar(2048)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.SelectAssemblyByAssemblyName" Method="SelectAssemblyByAssemblyName">
+    <Parameter Name="AssemblyName" Parameter="assemblyName" Type="System.String" DbType="VarChar(64)" />
+    <ElementType Name="SelectAssemblyByAssemblyNameResult">
+      <Column Name="AssemblyLength" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AssemblyFiles" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.UpdateHostLog" Method="UpdateHostLog">
+    <Parameter Name="AssemblyProjectID" Parameter="assemblyProjectID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="HostName" Parameter="hostName" Type="System.String" DbType="VarChar(256)" />
+    <Parameter Name="HostIP" Parameter="hostIP" Type="System.String" DbType="VarChar(32)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.UpdateHostLog02" Method="UpdateHostLog02">
+    <Parameter Name="AssemblyProjectID" Parameter="assemblyProjectID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="HostName" Parameter="hostName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="HostIP" Parameter="hostIP" Type="System.String" DbType="NVarChar(32)" />
+    <Parameter Name="AssemblyNames" Parameter="assemblyNames" Type="System.String" DbType="NVarChar(2048)" />
+    <Return Type="System.Int32" />
+  </Function>
+</Database>
