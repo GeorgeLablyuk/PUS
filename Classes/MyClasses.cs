@@ -82,7 +82,7 @@ namespace ModulesLoader.Classes
         [DllImport("version.dll")]
         public static extern unsafe bool VerQueryValue(byte[] pBlock,
             string pSubBlock, out short* pValue, out uint len);
-        
+
         #endregion
 
     }
