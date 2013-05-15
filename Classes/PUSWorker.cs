@@ -3,8 +3,10 @@ using ModulesLoader.Data;
 using System;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 
 namespace ModulesLoader.Classes
@@ -15,16 +17,25 @@ namespace ModulesLoader.Classes
         {
             string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
             var versionDb = new VersionDBDataContext(strConnection);
+            List<Process> prcArray;
 
             while (!_shouldStop)
             {
+
                 // Put the main thread to sleep for 1 millisecond to
                 // allow the worker thread to do some work:
+
                 Thread.Sleep(Settings.Default.WaitForTest); // Waitin in second 
 
                 int intUpdateNumber = 0;
                 int intNewNeedUpdate = versionDb.tUpdateNumbers.Single(
                     one => one.AssemblyProjectID == MyClasses._intProjectId).UpdateNumber;
+
+                prcArray = Process.GetProcesses().ToList();
+                if (prcArray.Find(pus => pus.ProcessName.Equals("PUSPolises")) == null)
+                {
+                    _shouldStop = true;
+                }
 
                 if (!File.Exists(MyClasses._strNeedLoadUpdateFileName) ||
                     int.TryParse(File.ReadAllText(MyClasses._strNeedLoadUpdateFileName), out intUpdateNumber) &&
