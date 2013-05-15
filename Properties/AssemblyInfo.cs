@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LoaderLGP")]
 [assembly: AssemblyDescription("Program Version changer")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Baltikums")]
+[assembly: AssemblyCompany("Baltikums AAS")]
 [assembly: AssemblyProduct("Version changer")]
 [assembly: AssemblyCopyright("Copyright © Baltikums 2009")]
 [assembly: AssemblyTrademark("")]

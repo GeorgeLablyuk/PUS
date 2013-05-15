@@ -16,14 +16,17 @@
     <Setting Name="ExecutableName" Type="System.String" Scope="User">
       <Value Profile="(Default)">PUSPolises.exe</Value>
     </Setting>
-    <Setting Name="ProjectID" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
-    </Setting>
     <Setting Name="NeedLoadUpdateFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">NeedLoad.lgp</Value>
     </Setting>
     <Setting Name="ServerIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">192.168.0.5</Value>
+    </Setting>
+    <Setting Name="ProjectID" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="WaitForTest" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Threading;
 using ModulesLoader.Classes;
 using ModulesLoader.Data;
 using ModulesLoader.Properties;
@@ -16,12 +17,6 @@ namespace ModulesLoader
     {
 
         #region Variables
-
-        private static string _strNeedLoadUpdateFileName;
-        private static string _strServerName;
-        private static string _strExecutableName;
-
-        private static int _intProjectId;
 
         private static FrmProgressClass _frmProgress;
         private static string _strLoaderName;
@@ -52,28 +47,23 @@ namespace ModulesLoader
                 var insAssembly = Assembly.GetExecutingAssembly();
                 _strLoaderVersion = insAssembly.GetName().Version.ToString();
                 _strLoaderName = insAssembly.GetName().Name;
-
-                _intProjectId = Settings.Default.ProjectID;
-
-                _strExecutableName = Settings.Default.ExecutableName;
-                _strNeedLoadUpdateFileName = Settings.Default.NeedLoadUpdateFileName;
+                MyClasses._intProjectId = Settings.Default.ProjectID;
+#if DEBUG 
+                MyClasses._intProjectId = 99;  
+#endif
+                MyClasses._strExecutableName = Settings.Default.ExecutableName;
+                MyClasses._strNeedLoadUpdateFileName = Settings.Default.NeedLoadUpdateFileName;
 
                 if (_strHostIp.StartsWith("192.168."))
                 {
-                    _strServerName = Settings.Default.ServerName;
+                    MyClasses._strServerName = Settings.Default.ServerName;
                 }
                 else
                 {
-                    _strServerName = Settings.Default.ServerIP;
+                    MyClasses._strServerName = Settings.Default.ServerIP;
                 }
-                _strServerName = Settings.Default.ServerName;
+                MyClasses._strServerName = Settings.Default.ServerName;
 
-                _strConnection = string.Format(@"Data Source={0};Application Name=PUS_Windows;
-                                                 Initial Catalog=VersionDB;
-                                                 Persist Security Info=True;
-                                                 User ID=psutan;
-                                                 Password=^1aS9zW>7+",
-                    _strServerName);
             }
             catch (Exception ex)
             {
@@ -86,25 +76,35 @@ namespace ModulesLoader
 
         private static void CheckNewVersions()
         {
+            PUSWorker PUSUpdatesTestObject = new PUSWorker();
+            Thread PUSUpdatesTestThread = new Thread(PUSUpdatesTestObject.StartTestForUpdates);
+
             try
             {
-                var versionDb = new VersionDBDataContext(_strConnection);
+                string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
+                var versionDb = new VersionDBDataContext(strConnection);
+                MyClasses._blnNewLoaderIsLoaded = false;
                 int intUpdateNumber = 0;
                 int intNewNeedUpdate = versionDb.tUpdateNumbers.Single(
-                    one => one.AssemblyProjectID == _intProjectId).UpdateNumber;
+                    one => one.AssemblyProjectID == MyClasses._intProjectId).UpdateNumber;
 
-                if (!File.Exists(_strNeedLoadUpdateFileName) ||
-                    int.TryParse(File.ReadAllText(_strNeedLoadUpdateFileName), out intUpdateNumber) &&
+                if (!File.Exists(MyClasses._strNeedLoadUpdateFileName) ||
+                    int.TryParse(File.ReadAllText(MyClasses._strNeedLoadUpdateFileName), out intUpdateNumber) &&
                     intUpdateNumber < intNewNeedUpdate)
                 {
                     LoadNewVersions();
-                    File.WriteAllText(_strNeedLoadUpdateFileName, intNewNeedUpdate.ToString());
+                    File.WriteAllText(MyClasses._strNeedLoadUpdateFileName, intNewNeedUpdate.ToString());
                 }
-                if (File.Exists(_strExecutableName))
+                if (File.Exists(MyClasses._strExecutableName))
                 {
-                    ShellNoWait(_strExecutableName);
+                    ShellNoWait(MyClasses._strExecutableName); // Start PUS
+                    if (!MyClasses._blnNewLoaderIsLoaded)
+                    {
+                        PUSUpdatesTestThread.Start(); // Start Test PUS for Updates
+                    }
                 }
-                versionDb.Dispose();
+                //versionDb.Dispose();
             }
             catch (Exception ex)
             {
@@ -116,9 +116,11 @@ namespace ModulesLoader
         private static void LoadNewVersions()
         {
             bool blnUpdated = false;
+            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
             try
             {
-                var versionDb = new VersionDBDataContext(_strConnection);
+                var versionDb = new VersionDBDataContext(strConnection);
                 _frmProgress = new FrmProgressClass
                 {
                     Text = string.Format("{0}{1}", Resources.Program_Main_Loader_version, _strLoaderVersion),
@@ -128,7 +130,7 @@ namespace ModulesLoader
                 _frmProgress.Show();
                 string strAssemblyNames = string.Empty;
                 foreach (var oneAssembly in
-                    (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == _intProjectId))).ToList())
+                    (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
                 {
                     Application.DoEvents();
                     _frmProgress.lblAssemblyName.Text = oneAssembly.AssemblyName;
@@ -140,8 +142,11 @@ namespace ModulesLoader
                                           VersionCompare(MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName),
                                               oneAssembly.AssemblyVersion))))
                     {
-                        LoadAssemblyFromStore(oneAssembly.AssemblyName, _intProjectId, oneAssembly.Compressed);
+                        LoadAssemblyFromStore(oneAssembly.AssemblyName, MyClasses._intProjectId, oneAssembly.Compressed);
                         strAssemblyNames += string.Format("{0}, ", oneAssembly.AssemblyName);
+
+                        MyClasses._blnNewLoaderIsLoaded = (blnIsLoader && VersionCompare(_strLoaderVersion, oneAssembly.AssemblyVersion));
+
                         blnUpdated = true;
                         _frmProgress.pbrProgressBar.Value += 1;
                         _frmProgress.Refresh();
@@ -152,7 +157,7 @@ namespace ModulesLoader
 
                 if (blnUpdated)
                 {
-                    versionDb.UpdateHostLog02(_intProjectId, _strHostName, _strHostIp, strAssemblyNames);
+                    versionDb.UpdateHostLog02(MyClasses._intProjectId, _strHostName, _strHostIp, strAssemblyNames);
                 }
                 versionDb.Dispose();
             }
@@ -195,8 +200,10 @@ namespace ModulesLoader
         {
             try
             {
+                string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
                 byte[] readByteAssembly;
-                using (var versionDb = new VersionDBDataContext(_strConnection))
+                using (var versionDb = new VersionDBDataContext(strConnection))
                 {
                     readByteAssembly = versionDb.AssemblyFiles.Single(
                         one => one.AssemblyName == strAssemblyName && one.AssemblyProjectID == intAssemblyProjectID).AssemblyFiles.ToArray();

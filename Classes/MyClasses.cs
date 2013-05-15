@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 // Team foundation OK!
 
@@ -9,6 +10,25 @@ namespace ModulesLoader.Classes
 {
     internal class MyClasses
     {
+
+        #region Static Variables
+
+        public static bool _blnNewLoaderIsLoaded;
+        public static string _strNeedLoadUpdateFileName;
+        public static string _strServerName;
+        public static string _strExecutableName;
+        public static string _strConnection = @"Data Source={0};Application Name=PUS_Windows;
+                                                            Initial Catalog=VersionDB;
+                                                            Persist Security Info=True;
+                                                            User ID=psutan;
+                                                            Password=^1aS9zW>7+";
+        public static int _intProjectId;
+
+        public static PUSWorker PUSUpdatesTestObject;
+        public static Thread PUSUpdatesTestThread;
+
+        #endregion
+
         public static void StreamCopy(Stream sourceStream, Stream destStream)
         {
             try
