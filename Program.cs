@@ -23,7 +23,6 @@ namespace ModulesLoader
 
         private static string _strHostIp;
         private static string _strHostName;
-        private static string _strConnection;
 
         #endregion
 
@@ -48,7 +47,7 @@ namespace ModulesLoader
                 _strLoaderName = insAssembly.GetName().Name;
                 MyClasses._intProjectId = Settings.Default.ProjectID;
 #if DEBUG 
-                MyClasses._intProjectId = 99;  
+                //MyClasses._intProjectId = 99;  
 #endif
                 MyClasses._strExecutableName = Settings.Default.ExecutableName;
                 MyClasses._strNeedLoadUpdateFileName = Settings.Default.NeedLoadUpdateFileName;

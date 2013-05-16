@@ -20,11 +20,11 @@ namespace ModulesLoader.Classes
         {
             string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
             var versionDb = new VersionDBDataContext(strConnection);
-            List<Process> prcArray;
+            _shouldStop = false;
 
             while (!_shouldStop)
             {
-
+                if (IsPUSWorked() == null) break;
                 Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
 
                 int intUpdateNumber = 0;
@@ -47,8 +47,8 @@ namespace ModulesLoader.Classes
                     {
                         IsPUSWorked().Kill();
                         Thread.Sleep(100);
-                        MyClasses._blnPUSIsKilled = true;
                     }
+                    MyClasses._blnPUSIsKilled = true;
                     _shouldStop = true;
                 }
 

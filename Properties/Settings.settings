@@ -26,10 +26,10 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="WaitForTest" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">60000</Value>
+      <Value Profile="(Default)">900000</Value>
     </Setting>
     <Setting Name="WaitForEnd" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">300000</Value>
+      <Value Profile="(Default)">30000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -96,7 +96,7 @@ namespace ModulesLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("60000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("900000")]
         public int WaitForTest {
             get {
                 return ((int)(this["WaitForTest"]));
@@ -108,7 +108,7 @@ namespace ModulesLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("30000")]
         public int WaitForEnd {
             get {
                 return ((int)(this["WaitForEnd"]));

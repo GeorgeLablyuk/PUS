@@ -18,7 +18,7 @@ namespace ModulesLoader.Classes
         public static string _strNeedLoadUpdateFileName;
         public static string _strServerName;
         public static string _strExecutableName;
-        public static string _strConnection = @"Data Source={0};Application Name=PUS_Windows;
+        public static string _strConnection = @"Data Source={0};Application Name=LoaderLGP;
                                                             Initial Catalog=VersionDB;
                                                             Persist Security Info=True;
                                                             User ID=psutan;
