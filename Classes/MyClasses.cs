@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 // Team foundation OK!
 
@@ -14,6 +13,8 @@ namespace ModulesLoader.Classes
         #region Static Variables
 
         public static bool _blnNewLoaderIsLoaded;
+        public static bool _blnPUSIsKilled;
+
         public static string _strNeedLoadUpdateFileName;
         public static string _strServerName;
         public static string _strExecutableName;
@@ -23,9 +24,6 @@ namespace ModulesLoader.Classes
                                                             User ID=psutan;
                                                             Password=^1aS9zW>7+";
         public static int _intProjectId;
-
-        public static PUSWorker PUSUpdatesTestObject;
-        public static Thread PUSUpdatesTestThread;
 
         #endregion
 

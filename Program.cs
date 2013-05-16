@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Threading;
 using ModulesLoader.Classes;
 using ModulesLoader.Data;
 using ModulesLoader.Properties;
@@ -16,7 +15,7 @@ namespace ModulesLoader
     internal class Program
     {
 
-        #region Variables
+        #region Local Variables
 
         private static FrmProgressClass _frmProgress;
         private static string _strLoaderName;
@@ -76,14 +75,13 @@ namespace ModulesLoader
 
         private static void CheckNewVersions()
         {
-            PUSWorker PUSUpdatesTestObject = new PUSWorker();
-            Thread PUSUpdatesTestThread = new Thread(PUSUpdatesTestObject.StartTestForUpdates);
 
             try
             {
                 string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
 
                 var versionDb = new VersionDBDataContext(strConnection);
+lblBegin:
                 MyClasses._blnNewLoaderIsLoaded = false;
                 int intUpdateNumber = 0;
                 int intNewNeedUpdate = versionDb.tUpdateNumbers.Single(
@@ -99,12 +97,17 @@ namespace ModulesLoader
                 if (File.Exists(MyClasses._strExecutableName))
                 {
                     ShellNoWait(MyClasses._strExecutableName); // Start PUS
+                    MyClasses._blnPUSIsKilled = false;
                     if (!MyClasses._blnNewLoaderIsLoaded)
                     {
-                        PUSUpdatesTestThread.Start(); // Start Test PUS for Updates
+                        PUSWorker.StartTestForUpdates(); // Start Test PUS for Updates
                     }
                 }
-                //versionDb.Dispose();
+                if (MyClasses._blnPUSIsKilled && PUSWorker.IsPUSWorked() == null)
+                {
+                    goto lblBegin;
+                }
+                versionDb.Dispose();
             }
             catch (Exception ex)
             {
@@ -167,6 +170,8 @@ namespace ModulesLoader
                     string.Format("{0}{1}", Resources.Program_Main_Loader_version, _strLoaderVersion), MessageBoxButtons.OK);
             }
         }
+
+        #region Test and Update modules
 
         private static bool VersionCompare(string OldAssembly, string NewAssembly)
         {
@@ -256,6 +261,9 @@ namespace ModulesLoader
                 MessageBox.Show(string.Format("{0}{1}", Resources.Program_Main_ERROR, ex.Message),
                     string.Format("{0}{1}", Resources.Program_Main_Loader_version, _strLoaderVersion), MessageBoxButtons.OK);
             }
-        }
+        } 
+
+        #endregion
+
     }
 }

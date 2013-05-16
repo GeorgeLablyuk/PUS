@@ -105,5 +105,17 @@ namespace ModulesLoader.Properties {
                 this["WaitForTest"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300000")]
+        public int WaitForEnd {
+            get {
+                return ((int)(this["WaitForEnd"]));
+            }
+            set {
+                this["WaitForEnd"] = value;
+            }
+        }
     }
 }

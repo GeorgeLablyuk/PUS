@@ -28,5 +28,8 @@
     <Setting Name="WaitForTest" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60000</Value>
     </Setting>
+    <Setting Name="WaitForEnd" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

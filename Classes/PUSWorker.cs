@@ -11,10 +11,12 @@ using System.Collections.Generic;
 
 namespace ModulesLoader.Classes
 {
-    class PUSWorker
+    internal class PUSWorker
     {
-        private bool _shouldStop;
-        public void StartTestForUpdates()
+        private static bool _shouldStop;
+        static frmPUSUpdate frmUpdates = new frmPUSUpdate();
+
+        public static void StartTestForUpdates()
         {
             string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
             var versionDb = new VersionDBDataContext(strConnection);
@@ -23,34 +25,40 @@ namespace ModulesLoader.Classes
             while (!_shouldStop)
             {
 
-                // Put the main thread to sleep for 1 millisecond to
-                // allow the worker thread to do some work:
-
-                Thread.Sleep(Settings.Default.WaitForTest); // Waitin in second 
+                Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
 
                 int intUpdateNumber = 0;
                 int intNewNeedUpdate = versionDb.tUpdateNumbers.Single(
                     one => one.AssemblyProjectID == MyClasses._intProjectId).UpdateNumber;
 
-                prcArray = Process.GetProcesses().ToList();
-                if (prcArray.Find(pus => pus.ProcessName.Equals("PUSPolises")) == null)
-                {
-                    _shouldStop = true;
-                }
 
                 if (!File.Exists(MyClasses._strNeedLoadUpdateFileName) ||
                     int.TryParse(File.ReadAllText(MyClasses._strNeedLoadUpdateFileName), out intUpdateNumber) &&
                     intUpdateNumber < intNewNeedUpdate)
                 {
-                    DialogResult dlgWhat = MessageBox.Show("Exist new version of P.U.S. Please close and restart P.U.S", "P.U.S. Updater",MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                    if (dlgWhat.Equals(DialogResult.Yes))
+                    frmUpdates.Show();
+                    Application.DoEvents();
+                    //frmUpdates.Refresh();
+                    Thread.Sleep(Settings.Default.WaitForEnd);
+                    
+                    frmUpdates.Hide();
+                   
+                    if (IsPUSWorked() != null)
                     {
-                        //MyClasses.PUSUpdatesTestObject.RequestStop();
-                        _shouldStop = true;
+                        IsPUSWorked().Kill();
+                        Thread.Sleep(100);
+                        MyClasses._blnPUSIsKilled = true;
                     }
+                    _shouldStop = true;
                 }
 
             }
+        }
+
+        public static Process IsPUSWorked()
+        {
+            List<Process> prcArray = Process.GetProcesses().ToList();
+            return prcArray.Find(pus => pus.ProcessName.Equals(MyClasses._strExecutableName.Replace(".exe", "")));
         }
  
     }
