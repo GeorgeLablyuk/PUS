@@ -97,15 +97,17 @@ lblBegin:
                 if (File.Exists(MyClasses._strExecutableName))
                 {
                     ShellNoWait(MyClasses._strExecutableName); // Start PUS
+
                     MyClasses._blnPUSIsKilled = false;
+
                     if (!MyClasses._blnNewLoaderIsLoaded)
                     {
                         PUSWorker.StartTestForUpdates(); // Start Test PUS for Updates
+                        if (MyClasses._blnPUSIsKilled && PUSWorker.IsPUSWorked() == null)
+                        {
+                            goto lblBegin;
+                        }
                     }
-                }
-                if (MyClasses._blnPUSIsKilled && PUSWorker.IsPUSWorked() == null)
-                {
-                    goto lblBegin;
                 }
                 versionDb.Dispose();
             }
