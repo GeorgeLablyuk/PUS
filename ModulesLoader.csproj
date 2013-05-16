@@ -78,10 +78,10 @@
   <ItemGroup>
     <Compile Include="Classes\MyClasses.cs" />
     <Compile Include="Classes\PUSWorker.cs" />
-    <Compile Include="frmProgressClass.cs">
+    <Compile Include="Forms\frmProgressClass.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmProgressClass.Designer.cs">
+    <Compile Include="Forms\frmProgressClass.Designer.cs">
       <DependentUpon>frmProgressClass.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -96,10 +96,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="frmPUSUpdate.cs">
+    <Compile Include="Forms\frmPUSUpdate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmPUSUpdate.Designer.cs">
+    <Compile Include="Forms\frmPUSUpdate.Designer.cs">
       <DependentUpon>frmPUSUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
@@ -133,14 +133,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="frmProgressClass.resx">
+    <EmbeddedResource Include="Forms\frmProgressClass.resx">
       <DependentUpon>frmProgressClass.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmPUSUpdate.resx">
+    <EmbeddedResource Include="Forms\frmPUSUpdate.resx">
       <DependentUpon>frmPUSUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
