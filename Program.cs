@@ -16,24 +16,12 @@ namespace ModulesLoader
     internal class Program
     {
 
-        #region Local Variables
-
-        private static FrmProgressClass _frmProgress;
-        private static string _strLoaderName;
-        private static string _strLoaderVersion;
-
-        // PUSPolises
-        //public static frmLoginClass frmLogin;
-        //public static frmMainClass frmMain;
-        //public static frmAboutClass frmAbout;
-
-        #endregion
-
         [STAThread]
         private static void Main()
         {
             try
             {
+
                 if (MyClasses.RunningInstance() != null) return;
 
                 Licenser.LicenseKey = "ZIN37-U8JE5-P55Z8-YKCA";
@@ -48,12 +36,8 @@ namespace ModulesLoader
                     MyClasses._strHostIp = "192.168.";
                 }
                 var insAssembly = Assembly.GetExecutingAssembly();
-                //_strLoaderVersion = insAssembly.GetName().Version.ToString();
-                //_strLoaderName = insAssembly.GetName().Name;
+
                 MyClasses._intProjectId = Settings.Default.ProjectID;
-                //#if DEBUG 
-                //                //MyClasses._intProjectId = 99;  
-                //#endif
 
                 if (MyClasses._strHostIp.StartsWith("192.168."))
                 {
@@ -83,19 +67,29 @@ namespace ModulesLoader
 
                 var versionDb = new VersionDBDataContext(strConnection);
 
-                MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp);
+                // First check for new version
+                if (File.Exists(Settings.Default.BatchHandlerName))
+                {
+                    File.Delete(Settings.Default.BatchHandlerName);
+                }
 
+                if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
+                {
+                    MyClasses.LoadBatchHandler();
+                    MyClasses.ShellNoWait(Settings.Default.BatchHandlerName);
+                    return;
+                }
                 PUSUpdate insPUSUpdate = new PUSUpdate();
                 Thread PUSUpdateThread = new Thread(insPUSUpdate.StartTestForUpdates);
 
-                PUSWorker insPUSWorker = new PUSWorker();
-                Thread PUSWorkerThread = new Thread(insPUSWorker.StartPUS);
+                //PUSWorker insPUSWorker = new PUSWorker();
+                //Thread PUSWorkerThread = new Thread(insPUSWorker.StartPUS);
 
                 // Start Test For Update thread.
                 PUSUpdateThread.Start();
 
                 // Start PUS.
-                PUSWorkerThread.Start();
+                PUSWorker.StartPUS();
 
                 versionDb.Dispose();
             }
@@ -104,5 +98,6 @@ namespace ModulesLoader
                 string err = ex.Message;
             }
         }
+
     }
 }

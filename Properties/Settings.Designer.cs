@@ -117,5 +117,17 @@ namespace ModulesLoader.Properties {
                 this["ExecutableNameNew"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("PUSUpdate.exe")]
+        public string BatchHandlerName {
+            get {
+                return ((string)(this["BatchHandlerName"]));
+            }
+            set {
+                this["BatchHandlerName"] = value;
+            }
+        }
     }
 }

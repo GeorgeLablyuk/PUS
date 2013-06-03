@@ -16,7 +16,7 @@ namespace ModulesLoader.Classes
         
         static frmPUSUpdate frmUpdates = new frmPUSUpdate();
 
-        public  void StartTestForUpdates()
+        internal void StartTestForUpdates()
         {
             string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
             var versionDb = new VersionDBDataContext(strConnection);
@@ -36,14 +36,16 @@ namespace ModulesLoader.Classes
                     frmUpdates.Hide();
                     MyClasses._shouldStop = true;
                 }
-
             }
+            MyClasses.LoadBatchHandler();
+            MyClasses.ShellNoWait(Settings.Default.BatchHandlerName);
+            Application.Exit();
         }
     }
 
     public class PUSWorker
     {
-        internal  void StartPUS()
+        internal static void StartPUS()
         {
             StartPUS insStartPUS = new StartPUS();
             insStartPUS.PusRun();

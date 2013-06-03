@@ -133,6 +133,88 @@ namespace ModulesLoader.Classes
             return null;
         }
 
+        internal static bool LoadNewVersions(string strHostName, string strHostIp)
+        {
+            bool blnUpdated = false;
+            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
+            try
+            {
+                var versionDb = new VersionDBDataContext(strConnection);
+                string strAssemblyNames = string.Empty;
+                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
+                {
+
+                    if ((oneAssembly.AssemblyName.Equals(Settings.Default.ExecutableName)) && MyClasses.VersionCompare(MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName), oneAssembly.AssemblyVersion))
+                    {
+                        MyClasses.LoadAssemblyFromStore(oneAssembly.AssemblyName, MyClasses._intProjectId);
+                        strAssemblyNames += string.Format("{0}, ", oneAssembly.AssemblyName);
+                        blnUpdated = true;
+                    }
+                }
+
+                if (blnUpdated)
+                {
+                    versionDb.UpdateHostLog02(MyClasses._intProjectId, strHostName, strHostIp, strAssemblyNames);
+                }
+                versionDb.Dispose();
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+            return blnUpdated;
+        }
+
+        internal static  void LoadBatchHandler()
+        {
+            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+            string strUpdaterName = Settings.Default.BatchHandlerName;
+            string strUpdaterNameTemp = "Temp0382";
+            try
+            {
+                var versionDb = new VersionDBDataContext(strConnection);
+                string strAssemblyNames = string.Empty;
+                if (File.Exists(strUpdaterName))
+                {
+                    File.Delete(strUpdaterName);
+                }
+                if (File.Exists(strUpdaterNameTemp))
+                {
+                    File.Delete(strUpdaterNameTemp);
+                }
+                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
+                {
+
+                    if (oneAssembly.AssemblyName.Equals(strUpdaterName))
+                    {
+                        byte[] readByteAssembly;
+                            readByteAssembly = versionDb.AssemblyFiles.Single(
+                                one => one.AssemblyName == strUpdaterName && one.AssemblyProjectID == MyClasses._intProjectId).AssemblyFiles.ToArray();
+
+                            File.WriteAllBytes((strUpdaterNameTemp), readByteAssembly);
+                            var readBlob = new FileStream(strUpdaterNameTemp, FileMode.Open, FileAccess.Read);
+                            var destStream = new FileStream(strUpdaterName, FileMode.Create, FileAccess.Write);
+
+                        var compStream = new CompressedStream(readBlob);
+                        MyClasses.StreamCopy(compStream, destStream);
+                        destStream.Close();
+                    }
+                }
+
+                if (File.Exists(strUpdaterNameTemp))
+                {
+                    File.Delete(strUpdaterNameTemp);
+                }
+                versionDb.Dispose();
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+            return;
+        }
+
         internal static bool VersionCompare(string OldAssembly, string NewAssembly)
         {
             if (OldAssembly.Equals(string.Empty) || NewAssembly.Equals(string.Empty))
@@ -161,50 +243,22 @@ namespace ModulesLoader.Classes
             return false;
         }
 
-        internal static bool LoadNewVersions(string strHostName, string strHostIp)
-        {
-            bool blnUpdated = false;
-            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
-
-            try
-            {
-                var versionDb = new VersionDBDataContext(strConnection);
-                string strAssemblyNames = string.Empty;
-                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
-                {
-
-                    if (!File.Exists(oneAssembly.AssemblyName) || MyClasses.VersionCompare(MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName), oneAssembly.AssemblyVersion))
-                    {
-                        MyClasses.LoadAssemblyFromStore(oneAssembly.AssemblyName, MyClasses._intProjectId, oneAssembly.Compressed);
-                        strAssemblyNames += string.Format("{0}, ", oneAssembly.AssemblyName);
-
-                        blnUpdated = true;
-
-                    }
-                }
-
-                if (blnUpdated)
-                {
-                    versionDb.UpdateHostLog02(MyClasses._intProjectId, strHostName, strHostIp, strAssemblyNames);
-                }
-                versionDb.Dispose();
-            }
-            catch (Exception ex)
-            {
-                string err = ex.Message;
-            }
-            return blnUpdated;
-        }
-
-
-        internal static void LoadAssemblyFromStore(string strAssemblyName, int intAssemblyProjectID, bool blnCompressed)
+        internal static void LoadAssemblyFromStore(string strAssemblyName, int intAssemblyProjectID)
         {
             //_strExecutableName
-            _strExecutableName = Settings.Default.ExecutableName;
-            _strExecutableNewName = Settings.Default.ExecutableName;
+            string strTempFileName = "Temp0219";
+            _strExecutableNewName = Settings.Default.ExecutableNameNew;
             try
             {
                 string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+                if (File.Exists(_strExecutableNewName))
+                {
+                    File.Delete(_strExecutableNewName);
+                }
+                if (File.Exists(strTempFileName))
+                {
+                    File.Delete(strTempFileName);
+                }
 
                 byte[] readByteAssembly;
                 using (var versionDb = new VersionDBDataContext(strConnection))
@@ -213,33 +267,18 @@ namespace ModulesLoader.Classes
                         one => one.AssemblyName == strAssemblyName && one.AssemblyProjectID == intAssemblyProjectID).AssemblyFiles.ToArray();
                 }
 
-                string strFileName = string.Format("{0}{1}", strAssemblyName, (blnCompressed) ? ".zip" : "");
-                if (_strExecutableName.Equals(strFileName))
+                File.WriteAllBytes((strTempFileName), readByteAssembly);
+                var readBlob = new FileStream(strTempFileName, FileMode.Open, FileAccess.Read);
+                var destStream = new FileStream(_strExecutableNewName, FileMode.Create, FileAccess.Write);
+
+                var compStream = new CompressedStream(readBlob);
+                MyClasses.StreamCopy(compStream, destStream);
+                destStream.Close();
+                if (File.Exists(strTempFileName))
                 {
-                    File.WriteAllBytes((_strExecutableNewName), readByteAssembly);
-                }
-                else
-                {
-                    if (File.Exists(strFileName))
-                    {
-                        File.Delete(strFileName);
-                    }
-                    File.WriteAllBytes((strFileName), readByteAssembly);
+                    File.Delete(strTempFileName);
                 }
 
-                if (blnCompressed)
-                {
-                    var destStream = new FileStream(strAssemblyName, FileMode.Create, FileAccess.Write);
-                    var readBlob = new FileStream(string.Format("{0}.zip", strAssemblyName), FileMode.Open, FileAccess.Read);
-
-                    var compStream = new CompressedStream(readBlob);
-                    MyClasses.StreamCopy(compStream, destStream);
-                    destStream.Close();
-                    if (File.Exists(string.Format("{0}.zip", strAssemblyName)))
-                    {
-                        File.Delete(string.Format("{0}.zip", strAssemblyName));
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -247,5 +286,23 @@ namespace ModulesLoader.Classes
             }
         }
 
+        internal static void ShellNoWait(string strCommand)
+        {
+            try
+            {
+                var startInfo = new ProcessStartInfo(strCommand);
+                using (var myProcess = new Process())
+                {
+                    startInfo.UseShellExecute = true;
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    myProcess.StartInfo = startInfo;
+                    myProcess.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+        }
     }
 }

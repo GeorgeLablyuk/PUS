@@ -31,5 +31,8 @@
     <Setting Name="ExecutableNameNew" Type="System.String" Scope="User">
       <Value Profile="(Default)">PUSNew.exe</Value>
     </Setting>
+    <Setting Name="BatchHandlerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PUSUpdate.exe</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
