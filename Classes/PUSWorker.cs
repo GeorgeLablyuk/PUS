@@ -7,59 +7,47 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
-
+using PUSPolises;
 
 namespace ModulesLoader.Classes
 {
-    internal class PUSWorker
+    public class PUSUpdate
     {
-        private static bool _shouldStop;
+        
         static frmPUSUpdate frmUpdates = new frmPUSUpdate();
 
-        public static void StartTestForUpdates()
+        public  void StartTestForUpdates()
         {
             string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
             var versionDb = new VersionDBDataContext(strConnection);
-            _shouldStop = false;
+            MyClasses._shouldStop = false;
 
-            while (!_shouldStop)
+            while (!MyClasses._shouldStop)
             {
-                if (IsPUSWorked() == null) break;
                 Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
 
-                int intUpdateNumber = 0;
-                int intNewNeedUpdate = versionDb.tUpdateNumbers.Single(
-                    one => one.AssemblyProjectID == MyClasses._intProjectId).UpdateNumber;
-
-
-                if (!File.Exists(MyClasses._strNeedLoadUpdateFileName) ||
-                    int.TryParse(File.ReadAllText(MyClasses._strNeedLoadUpdateFileName), out intUpdateNumber) &&
-                    intUpdateNumber < intNewNeedUpdate)
+                if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
                 {
                     frmUpdates.Show();
                     Application.DoEvents();
-                    //frmUpdates.Refresh();
+                    frmUpdates.Refresh();
                     Thread.Sleep(Settings.Default.WaitForEnd);
                     
                     frmUpdates.Hide();
-                   
-                    if (IsPUSWorked() != null)
-                    {
-                        IsPUSWorked().Kill();
-                        Thread.Sleep(100);
-                    }
-                    MyClasses._blnPUSIsKilled = true;
-                    _shouldStop = true;
+                    MyClasses._shouldStop = true;
                 }
 
             }
         }
+    }
 
-        public static Process IsPUSWorked()
+    public class PUSWorker
+    {
+        internal  void StartPUS()
         {
-            List<Process> prcArray = Process.GetProcesses().ToList();
-            return prcArray.Find(pus => pus.ProcessName.Equals(MyClasses._strExecutableName.Replace(".exe", "")));
+            StartPUS insStartPUS = new StartPUS();
+            insStartPUS.PusRun();
+            MyClasses._shouldStop = true;
         }
- 
     }
 }

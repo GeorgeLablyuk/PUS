@@ -1,9 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using ModulesLoader.Properties;
+using ModulesLoader.Data;
+using Xceed.Compression;
 
-// Team foundation OK!
 
 namespace ModulesLoader.Classes
 {
@@ -12,22 +17,24 @@ namespace ModulesLoader.Classes
 
         #region Static Variables
 
-        public static bool _blnNewLoaderIsLoaded;
-        public static bool _blnPUSIsKilled;
+        internal static string _strHostIp;
+        internal static string _strHostName;
 
-        public static string _strNeedLoadUpdateFileName;
-        public static string _strServerName;
-        public static string _strExecutableName;
-        public static string _strConnection = @"Data Source={0};Application Name=LoaderLGP;
+        internal static string _strServerName;
+        internal static string _strExecutableName;
+        internal static string _strExecutableNewName;
+
+        internal static string _strConnection = @"Data Source={0};Application Name=LoaderLGP;
                                                             Initial Catalog=VersionDB;
                                                             Persist Security Info=True;
                                                             User ID=psutan;
                                                             Password=^1aS9zW>7+";
-        public static int _intProjectId;
+        internal static int _intProjectId;
+        internal static bool _shouldStop;
 
         #endregion
 
-        public static void StreamCopy(Stream sourceStream, Stream destStream)
+        internal static void StreamCopy(Stream sourceStream, Stream destStream)
         {
             try
             {
@@ -48,7 +55,7 @@ namespace ModulesLoader.Classes
 
         #region Get executive version
 
-        public static unsafe string GetVersionForAnyExecutive(string strFullFileName)
+        internal static unsafe string GetVersionForAnyExecutive(string strFullFileName)
         {
             var fileInfo = new FileInfo(strFullFileName);
 
@@ -102,6 +109,143 @@ namespace ModulesLoader.Classes
             string pSubBlock, out short* pValue, out uint len);
 
         #endregion
+
+        internal static Process RunningInstance()
+        {
+            Process current = Process.GetCurrentProcess();
+            Process[] processes = Process.GetProcessesByName(current.ProcessName);
+
+            //Loop through the running processes in with the same name  
+            foreach (Process process in processes)
+            {
+                //Ignore the current process  
+                if (process.Id != current.Id)
+                {
+                    //Make sure that the process is running from the exe file.  
+                    if (Assembly.GetExecutingAssembly().Location.Replace("/", "\\") == current.MainModule.FileName)
+                    {
+                        //Return the other process instance.  
+                        return process;
+                    }
+                }
+            }
+            //No other instance was found, return null.  
+            return null;
+        }
+
+        internal static bool VersionCompare(string OldAssembly, string NewAssembly)
+        {
+            if (OldAssembly.Equals(string.Empty) || NewAssembly.Equals(string.Empty))
+            {
+                return false;
+            }
+            string[] OldVersion = OldAssembly.Split('.');
+            string[] NewOldVersion = NewAssembly.Split('.');
+
+            if (OldVersion.Length > 0 && NewOldVersion.Length > 0 && int.Parse(OldVersion[0]) < int.Parse(NewOldVersion[0]))
+            {
+                return true;
+            }
+            else if (OldVersion.Length > 1 && NewOldVersion.Length > 1 && int.Parse(OldVersion[1]) < int.Parse(NewOldVersion[1]))
+            {
+                return true;
+            }
+            else if (OldVersion.Length > 2 && NewOldVersion.Length > 2 && int.Parse(OldVersion[2]) < int.Parse(NewOldVersion[2]))
+            {
+                return true;
+            }
+            else if (OldVersion.Length > 3 && NewOldVersion.Length > 3 && int.Parse(OldVersion[3]) < int.Parse(NewOldVersion[3]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        internal static bool LoadNewVersions(string strHostName, string strHostIp)
+        {
+            bool blnUpdated = false;
+            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
+            try
+            {
+                var versionDb = new VersionDBDataContext(strConnection);
+                string strAssemblyNames = string.Empty;
+                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
+                {
+
+                    if (!File.Exists(oneAssembly.AssemblyName) || MyClasses.VersionCompare(MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName), oneAssembly.AssemblyVersion))
+                    {
+                        MyClasses.LoadAssemblyFromStore(oneAssembly.AssemblyName, MyClasses._intProjectId, oneAssembly.Compressed);
+                        strAssemblyNames += string.Format("{0}, ", oneAssembly.AssemblyName);
+
+                        blnUpdated = true;
+
+                    }
+                }
+
+                if (blnUpdated)
+                {
+                    versionDb.UpdateHostLog02(MyClasses._intProjectId, strHostName, strHostIp, strAssemblyNames);
+                }
+                versionDb.Dispose();
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+            return blnUpdated;
+        }
+
+
+        internal static void LoadAssemblyFromStore(string strAssemblyName, int intAssemblyProjectID, bool blnCompressed)
+        {
+            //_strExecutableName
+            _strExecutableName = Settings.Default.ExecutableName;
+            _strExecutableNewName = Settings.Default.ExecutableName;
+            try
+            {
+                string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+
+                byte[] readByteAssembly;
+                using (var versionDb = new VersionDBDataContext(strConnection))
+                {
+                    readByteAssembly = versionDb.AssemblyFiles.Single(
+                        one => one.AssemblyName == strAssemblyName && one.AssemblyProjectID == intAssemblyProjectID).AssemblyFiles.ToArray();
+                }
+
+                string strFileName = string.Format("{0}{1}", strAssemblyName, (blnCompressed) ? ".zip" : "");
+                if (_strExecutableName.Equals(strFileName))
+                {
+                    File.WriteAllBytes((_strExecutableNewName), readByteAssembly);
+                }
+                else
+                {
+                    if (File.Exists(strFileName))
+                    {
+                        File.Delete(strFileName);
+                    }
+                    File.WriteAllBytes((strFileName), readByteAssembly);
+                }
+
+                if (blnCompressed)
+                {
+                    var destStream = new FileStream(strAssemblyName, FileMode.Create, FileAccess.Write);
+                    var readBlob = new FileStream(string.Format("{0}.zip", strAssemblyName), FileMode.Open, FileAccess.Read);
+
+                    var compStream = new CompressedStream(readBlob);
+                    MyClasses.StreamCopy(compStream, destStream);
+                    destStream.Close();
+                    if (File.Exists(string.Format("{0}.zip", strAssemblyName)))
+                    {
+                        File.Delete(string.Format("{0}.zip", strAssemblyName));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+        }
 
     }
 }

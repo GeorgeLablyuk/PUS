@@ -20,5 +20,18 @@
         <elementListCompartment Id="bb38fa29-14cb-4200-9e1b-7f18c02b24fe" absoluteBounds="5.14, 5.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="6ba7ca30-a350-4ceb-a034-b521601c22de" absoluteBounds="7.875, 4.125, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/VersionDBDataContext/tAssemblyProject" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2de8e476-0a47-4cb0-ae70-32185ba3cb85" absoluteBounds="7.8900000000000006, 4.585, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7.875 : 4.72199625651042); (6.125 : 4.72199625651042); (6.125 : 3.3862939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VersionDBDataContext/tAssemblyProject/tAssemblyProject_tUpdateNumber" />
+      <nodes>
+        <classShapeMoniker Id="6ba7ca30-a350-4ceb-a034-b521601c22de" />
+        <classShapeMoniker Id="6a9c398b-936e-491b-9138-c502e71373e8" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VersionDB" Class="VersionDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=putra;Initial Catalog=VersionDB;Persist Security Info=True;User ID=psutan" SettingsObjectName="LoaderLGP.Properties.Settings" SettingsPropertyName="VersionDBConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=putra;Initial Catalog=VersionDB;Persist Security Info=True;User ID=psutan" SettingsObjectName="ModulesLoader.Properties.Settings" SettingsPropertyName="VersionDBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.tUpdateNumber" Member="tUpdateNumbers">
     <Type Name="tUpdateNumber">
       <Column Name="AssemblyProjectID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="UpdateNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="LastUpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="tAssemblyProject_tUpdateNumber" Member="tAssemblyProject" ThisKey="AssemblyProjectID" OtherKey="AssemmblyProjectID" Type="tAssemblyProject" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.tVersionFiles" Member="AssemblyFiles">
@@ -27,6 +28,13 @@
       <Column Name="HostIP" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
       <Column Name="LastUpdateDate" Type="System.DateTime" DbType="SmallDateTime NOT NULL" CanBeNull="false" />
       <Column Name="AssemblyNames" Type="System.String" DbType="NVarChar(2048)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tAssemblyProject" Member="tAssemblyProjects">
+    <Type Name="tAssemblyProject">
+      <Column Name="AssemmblyProjectID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AssemmblyProjectName" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
+      <Association Name="tAssemblyProject_tUpdateNumber" Member="tUpdateNumbers" ThisKey="AssemmblyProjectID" OtherKey="AssemblyProjectID" Type="tUpdateNumber" />
     </Type>
   </Table>
   <Function Name="dbo.SelectAssemblyByAssemblyName" Method="SelectAssemblyByAssemblyName">

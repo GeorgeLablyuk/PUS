@@ -14,22 +14,22 @@
       <Value Profile="(Default)">putra.baltikums.lv</Value>
     </Setting>
     <Setting Name="ExecutableName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">PUSPolises.exe</Value>
-    </Setting>
-    <Setting Name="NeedLoadUpdateFileName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">NeedLoad.lgp</Value>
+      <Value Profile="(Default)">PUS.exe</Value>
     </Setting>
     <Setting Name="ServerIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">192.168.0.5</Value>
     </Setting>
     <Setting Name="ProjectID" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">99</Value>
     </Setting>
     <Setting Name="WaitForTest" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">900000</Value>
+      <Value Profile="(Default)">60000</Value>
     </Setting>
     <Setting Name="WaitForEnd" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">30000</Value>
+    </Setting>
+    <Setting Name="ExecutableNameNew" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PUSNew.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

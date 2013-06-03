@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LoaderLGP")]
-[assembly: AssemblyDescription("Program Version changer")]
+[assembly: AssemblyTitle("PUS")]
+[assembly: AssemblyDescription("Polišu uzskaite sistēma")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Baltikums AAS")]
-[assembly: AssemblyProduct("Version changer")]
-[assembly: AssemblyCopyright("Copyright © Baltikums 2009")]
+[assembly: AssemblyProduct("Polišu uzskaite sistēma")]
+[assembly: AssemblyCopyright("Copyright © Baltikums 2005")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,4 +31,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.5.*")]
+[assembly: AssemblyVersion("3.5.0.1")]
