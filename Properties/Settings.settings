@@ -32,7 +32,7 @@
       <Value Profile="(Default)">PUSNew.exe</Value>
     </Setting>
     <Setting Name="BatchHandlerName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">PUSUpdate.exe</Value>
+      <Value Profile="(Default)">PUSUpdater.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

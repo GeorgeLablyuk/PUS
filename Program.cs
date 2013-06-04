@@ -1,15 +1,13 @@
-﻿using System;
-using System.Diagnostics;
+﻿using ModulesLoader.Classes;
+using ModulesLoader.Data;
+using ModulesLoader.Properties;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using ModulesLoader.Classes;
-using ModulesLoader.Data;
-using ModulesLoader.Properties;
 using Xceed.Compression;
-using PUSPolises;
 
 namespace ModulesLoader
 {

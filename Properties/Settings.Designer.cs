@@ -120,7 +120,7 @@ namespace ModulesLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PUSUpdate.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("PUSUpdater.exe")]
         public string BatchHandlerName {
             get {
                 return ((string)(this["BatchHandlerName"]));

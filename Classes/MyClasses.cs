@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ModulesLoader.Data;
+using ModulesLoader.Properties;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using ModulesLoader.Properties;
-using ModulesLoader.Data;
 using Xceed.Compression;
 
 
@@ -24,34 +24,16 @@ namespace ModulesLoader.Classes
         internal static string _strExecutableName;
         internal static string _strExecutableNewName;
 
-        internal static string _strConnection = @"Data Source={0};Application Name=LoaderLGP;
-                                                            Initial Catalog=VersionDB;
-                                                            Persist Security Info=True;
-                                                            User ID=psutan;
-                                                            Password=^1aS9zW>7+";
+        internal static string _strConnection = @"Data Source={0};
+                                                  Application Name=PUSWindows;
+                                                  Initial Catalog=VersionDB;
+                                                  Persist Security Info=True;
+                                                  User ID=psutan;
+                                                  Password=^1aS9zW>7+";
         internal static int _intProjectId;
         internal static bool _shouldStop;
 
         #endregion
-
-        internal static void StreamCopy(Stream sourceStream, Stream destStream)
-        {
-            try
-            {
-                int bytesRead;
-                var buffer = new byte[32768];
-
-                while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    destStream.Write(buffer, 0, bytesRead);
-                }
-            }
-            finally
-            {
-                sourceStream.Close();
-                destStream.Close();
-            }
-        }
 
         #region Get executive version
 
@@ -110,6 +92,27 @@ namespace ModulesLoader.Classes
 
         #endregion
 
+        #region Processes methodes
+
+        internal static void ShellNoWait(string strCommand)
+        {
+            try
+            {
+                var startInfo = new ProcessStartInfo(strCommand);
+                using (var myProcess = new Process())
+                {
+                    startInfo.UseShellExecute = true;
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    myProcess.StartInfo = startInfo;
+                    myProcess.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+        }
+
         internal static Process RunningInstance()
         {
             Process current = Process.GetCurrentProcess();
@@ -132,6 +135,10 @@ namespace ModulesLoader.Classes
             //No other instance was found, return null.  
             return null;
         }
+
+        #endregion
+
+        #region Test and Load New version
 
         internal static bool LoadNewVersions(string strHostName, string strHostIp)
         {
@@ -164,55 +171,6 @@ namespace ModulesLoader.Classes
                 string err = ex.Message;
             }
             return blnUpdated;
-        }
-
-        internal static  void LoadBatchHandler()
-        {
-            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
-            string strUpdaterName = Settings.Default.BatchHandlerName;
-            string strUpdaterNameTemp = "Temp0382";
-            try
-            {
-                var versionDb = new VersionDBDataContext(strConnection);
-                string strAssemblyNames = string.Empty;
-                if (File.Exists(strUpdaterName))
-                {
-                    File.Delete(strUpdaterName);
-                }
-                if (File.Exists(strUpdaterNameTemp))
-                {
-                    File.Delete(strUpdaterNameTemp);
-                }
-                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
-                {
-
-                    if (oneAssembly.AssemblyName.Equals(strUpdaterName))
-                    {
-                        byte[] readByteAssembly;
-                            readByteAssembly = versionDb.AssemblyFiles.Single(
-                                one => one.AssemblyName == strUpdaterName && one.AssemblyProjectID == MyClasses._intProjectId).AssemblyFiles.ToArray();
-
-                            File.WriteAllBytes((strUpdaterNameTemp), readByteAssembly);
-                            var readBlob = new FileStream(strUpdaterNameTemp, FileMode.Open, FileAccess.Read);
-                            var destStream = new FileStream(strUpdaterName, FileMode.Create, FileAccess.Write);
-
-                        var compStream = new CompressedStream(readBlob);
-                        MyClasses.StreamCopy(compStream, destStream);
-                        destStream.Close();
-                    }
-                }
-
-                if (File.Exists(strUpdaterNameTemp))
-                {
-                    File.Delete(strUpdaterNameTemp);
-                }
-                versionDb.Dispose();
-            }
-            catch (Exception ex)
-            {
-                string err = ex.Message;
-            }
-            return;
         }
 
         internal static bool VersionCompare(string OldAssembly, string NewAssembly)
@@ -286,23 +244,75 @@ namespace ModulesLoader.Classes
             }
         }
 
-        internal static void ShellNoWait(string strCommand)
+        internal static void StreamCopy(Stream sourceStream, Stream destStream)
         {
             try
             {
-                var startInfo = new ProcessStartInfo(strCommand);
-                using (var myProcess = new Process())
+                int bytesRead;
+                var buffer = new byte[32768];
+
+                while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    startInfo.UseShellExecute = true;
-                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    myProcess.StartInfo = startInfo;
-                    myProcess.Start();
+                    destStream.Write(buffer, 0, bytesRead);
                 }
+            }
+            finally
+            {
+                sourceStream.Close();
+                destStream.Close();
+            }
+        }
+
+        #endregion
+
+        internal static void LoadBatchHandler()
+        {
+            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+            string strUpdaterName = Settings.Default.BatchHandlerName;
+            string strUpdaterNameTemp = "Temp0382";
+            try
+            {
+                var versionDb = new VersionDBDataContext(strConnection);
+                string strAssemblyNames = string.Empty;
+                if (File.Exists(strUpdaterName))
+                {
+                    File.Delete(strUpdaterName);
+                }
+                if (File.Exists(strUpdaterNameTemp))
+                {
+                    File.Delete(strUpdaterNameTemp);
+                }
+                foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
+                {
+
+                    if (oneAssembly.AssemblyName.Equals(strUpdaterName))
+                    {
+                        byte[] readByteAssembly;
+                        readByteAssembly = versionDb.AssemblyFiles.Single(
+                            one => one.AssemblyName == strUpdaterName && one.AssemblyProjectID == MyClasses._intProjectId).AssemblyFiles.ToArray();
+
+                        File.WriteAllBytes((strUpdaterNameTemp), readByteAssembly);
+                        var readBlob = new FileStream(strUpdaterNameTemp, FileMode.Open, FileAccess.Read);
+                        var destStream = new FileStream(strUpdaterName, FileMode.Create, FileAccess.Write);
+
+                        var compStream = new CompressedStream(readBlob);
+                        MyClasses.StreamCopy(compStream, destStream);
+                        destStream.Close();
+                    }
+                }
+
+                if (File.Exists(strUpdaterNameTemp))
+                {
+                    File.Delete(strUpdaterNameTemp);
+                }
+                versionDb.Dispose();
             }
             catch (Exception ex)
             {
                 string err = ex.Message;
             }
+            return;
         }
+
     }
 }

@@ -1,13 +1,8 @@
-﻿using ModulesLoader.Properties;
-using ModulesLoader.Data;
-using System;
-using System.IO;
-using System.Linq;
-using System.Diagnostics;
+﻿using ModulesLoader.Data;
+using ModulesLoader.Properties;
+using PUSPolises;
 using System.Threading;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using PUSPolises;
 
 namespace ModulesLoader.Classes
 {
