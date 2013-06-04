@@ -23,10 +23,6 @@ namespace ModulesLoader.Classes
                 {
                     MyClasses.LoadBatchHandler();
                     frmUpdates.ShowDialog();
-                    //Application.DoEvents();
-                    //frmUpdates.Refresh();
-                    //Thread.Sleep(Settings.Default.WaitForEnd);
-                    
                     frmUpdates.Close();
                     MyClasses._shouldStop = true;
                     MyClasses.ShellNoWait(Settings.Default.BatchHandlerName, System.Diagnostics.ProcessWindowStyle.Hidden);

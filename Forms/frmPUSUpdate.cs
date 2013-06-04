@@ -34,5 +34,10 @@ namespace ModulesLoader
             this.timeCounter.Start();
             
         }
+
+        private void btnLabi_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

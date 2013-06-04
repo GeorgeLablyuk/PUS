@@ -28,8 +28,8 @@ namespace ModulesLoader.Classes
                                                   Application Name=PUSWindows;
                                                   Initial Catalog=VersionDB;
                                                   Persist Security Info=True;
-                                                  User ID=psutan;
-                                                  Password=^1aS9zW>7+";
+                                                  User ID=VersionDBadmin;
+                                                  Password=7Ur9NrBb#";
         internal static int _intProjectId;
         internal static bool _shouldStop;
 
