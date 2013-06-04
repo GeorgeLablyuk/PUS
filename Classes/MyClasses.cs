@@ -94,7 +94,7 @@ namespace ModulesLoader.Classes
 
         #region Processes methodes
 
-        internal static void ShellNoWait(string strCommand)
+        internal static void ShellNoWait(string strCommand, ProcessWindowStyle pStyle )
         {
             try
             {
@@ -102,7 +102,7 @@ namespace ModulesLoader.Classes
                 using (var myProcess = new Process())
                 {
                     startInfo.UseShellExecute = true;
-                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    startInfo.WindowStyle = pStyle;
                     myProcess.StartInfo = startInfo;
                     myProcess.Start();
                 }

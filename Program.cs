@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Forms;
 using Xceed.Compression;
 
 namespace ModulesLoader
@@ -71,21 +72,14 @@ namespace ModulesLoader
                     File.Delete(Settings.Default.BatchHandlerName);
                 }
 
-                if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
-                {
-                    MyClasses.LoadBatchHandler();
-                    MyClasses.ShellNoWait(Settings.Default.BatchHandlerName);
-                    return;
-                }
                 PUSUpdate insPUSUpdate = new PUSUpdate();
                 Thread PUSUpdateThread = new Thread(insPUSUpdate.StartTestForUpdates);
 
                 //PUSWorker insPUSWorker = new PUSWorker();
                 //Thread PUSWorkerThread = new Thread(insPUSWorker.StartPUS);
-
+               
                 // Start Test For Update thread.
                 PUSUpdateThread.Start();
-
                 // Start PUS.
                 PUSWorker.StartPUS();
 

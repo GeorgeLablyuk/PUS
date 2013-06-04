@@ -19,21 +19,21 @@ namespace ModulesLoader.Classes
 
             while (!MyClasses._shouldStop)
             {
-                Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
-
                 if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
                 {
+                    MyClasses.LoadBatchHandler();
                     frmUpdates.Show();
                     Application.DoEvents();
                     frmUpdates.Refresh();
                     Thread.Sleep(Settings.Default.WaitForEnd);
                     
-                    frmUpdates.Hide();
+                    frmUpdates.Close();
                     MyClasses._shouldStop = true;
+                    MyClasses.ShellNoWait(Settings.Default.BatchHandlerName, System.Diagnostics.ProcessWindowStyle.Hidden);
+                    Application.Exit();
                 }
+                Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
             }
-            MyClasses.LoadBatchHandler();
-            MyClasses.ShellNoWait(Settings.Default.BatchHandlerName);
             Application.Exit();
         }
     }
