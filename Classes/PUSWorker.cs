@@ -22,10 +22,10 @@ namespace ModulesLoader.Classes
                 if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
                 {
                     MyClasses.LoadBatchHandler();
-                    frmUpdates.Show();
-                    Application.DoEvents();
-                    frmUpdates.Refresh();
-                    Thread.Sleep(Settings.Default.WaitForEnd);
+                    frmUpdates.ShowDialog();
+                    //Application.DoEvents();
+                    //frmUpdates.Refresh();
+                    //Thread.Sleep(Settings.Default.WaitForEnd);
                     
                     frmUpdates.Close();
                     MyClasses._shouldStop = true;
@@ -34,7 +34,7 @@ namespace ModulesLoader.Classes
                 }
                 Thread.Sleep(Settings.Default.WaitForTest); // Waitin in XX second 
             }
-            Application.Exit();
+  
         }
     }
 
