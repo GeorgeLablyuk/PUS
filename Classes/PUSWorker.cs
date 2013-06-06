@@ -13,15 +13,14 @@ namespace ModulesLoader.Classes
 
         internal void StartTestForUpdates()
         {
-            string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
-            var versionDb = new VersionDBDataContext(strConnection);
+            var versionDb = new VersionDBDataContext(MyClasses._strConnection);
             MyClasses._shouldStop = false;
 
             while (!MyClasses._shouldStop)
             {
-                if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp))
+                if (MyClasses.LoadNewVersions(MyClasses._strHostName, MyClasses._strHostIp, Settings.Default.ExecutableName))
                 {
-                    MyClasses.LoadBatchHandler();
+                    MyClasses.LoadBatchHandler(Settings.Default.BatchHandlerName);
                     frmUpdates.ShowDialog();
                     frmUpdates.Close();
                     MyClasses._shouldStop = true;

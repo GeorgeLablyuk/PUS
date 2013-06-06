@@ -109,7 +109,6 @@
     <Compile Include="Forms\frmPUSUpdate.Designer.cs">
       <DependentUpon>frmPUSUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="Data\VersionDB.cs">
       <DependentUpon>VersionDB.dbml</DependentUpon>
     </Compile>
@@ -130,7 +129,6 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -149,7 +147,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="All software is current.ico" />
     <Content Include="Baltikums_IconPUS2.ico" />
   </ItemGroup>
   <ItemGroup>

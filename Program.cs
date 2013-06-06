@@ -21,7 +21,7 @@ namespace ModulesLoader
             {
                 if (MyClasses.RunningInstance() != null) return;
 
-                Licenser.LicenseKey = "ZIN37-U8JE5-P55Z8-YKCA";
+                Licenser.LicenseKey = MyClasses.strXceedLicenseKey;
                 var objEntry = Dns.GetHostEntry(Dns.GetHostName());
                 MyClasses._strHostName = objEntry.HostName;
                 try
@@ -57,12 +57,11 @@ namespace ModulesLoader
 
         private static void CheckNewVersions()
         {
-
             try
             {
-                string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+                MyClasses._strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
 
-                var versionDb = new VersionDBDataContext(strConnection);
+                var versionDb = new VersionDBDataContext(MyClasses._strConnection);
                 if (File.Exists(Settings.Default.BatchHandlerName))
                 {
                     File.Delete(Settings.Default.BatchHandlerName);
