@@ -21,6 +21,8 @@ namespace ModulesLoader.Classes
         internal static string _strHostName;
 
         internal static string _strServerName;
+        internal static string _strPUSOldVersion;
+        internal static string _strPUSNewVersion;
 
         internal static string _strConnection = @"Data Source={0};
                                                   Application Name=PUSWindows;
@@ -150,9 +152,11 @@ namespace ModulesLoader.Classes
                 string strAssemblyNames = string.Empty;
                 foreach (var oneAssembly in (versionDb.AssemblyFiles.Where(oneAssembly => (oneAssembly.AssemblyProjectID == MyClasses._intProjectId))).ToList())
                 {
-
-                    if ((oneAssembly.AssemblyName.Equals(strAssemblyName)) && MyClasses.VersionCompare(MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName), oneAssembly.AssemblyVersion))
+                    _strPUSOldVersion = MyClasses.GetVersionForAnyExecutive(oneAssembly.AssemblyName);
+                    _strPUSNewVersion = oneAssembly.AssemblyVersion;
+                    if ((oneAssembly.AssemblyName.Equals(strAssemblyName)) && MyClasses.VersionCompare(_strPUSOldVersion, _strPUSNewVersion))
                     {
+
                         MyClasses.LoadAssemblyFromStore(oneAssembly.AssemblyName, MyClasses._intProjectId);
                         strAssemblyNames += string.Format("{0}, ", oneAssembly.AssemblyName);
                         blnUpdated = true;

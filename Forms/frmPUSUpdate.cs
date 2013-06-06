@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ModulesLoader.Classes;
 
 namespace ModulesLoader
 {
@@ -29,6 +30,8 @@ namespace ModulesLoader
 
         private void frmPUSUpdate_Load(object sender, EventArgs e)
         {
+            this.Text = "P.U.S. Sistēma atjaunošāna!!!";
+            this.lblFromToVersion.Text = "V." + MyClasses._strPUSOldVersion + " -> " + "V." + MyClasses._strPUSOldVersion;
             this.timeCounter.Interval = (1000) * (1);              // Timer will tick evert second
             this.timeCounter.Enabled = true;                       // Enable the timer
             this.timeCounter.Start();
