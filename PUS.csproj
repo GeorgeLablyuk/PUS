@@ -60,6 +60,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PusDataAccess, Version=3.5.4813.16448, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Bin\PusDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="PUSIniFile, Version=1.0.1597.29233, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Bin\PUSIniFile.dll</HintPath>
+    </Reference>
     <Reference Include="PUSMain, Version=2.9.6.1, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Bin\PUSMain.dll</HintPath>

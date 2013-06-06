@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
 using Xceed.Compression;
 
 namespace ModulesLoader
@@ -20,7 +19,6 @@ namespace ModulesLoader
         {
             try
             {
-
                 if (MyClasses.RunningInstance() != null) return;
 
                 Licenser.LicenseKey = "ZIN37-U8JE5-P55Z8-YKCA";
@@ -65,8 +63,6 @@ namespace ModulesLoader
                 string strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
 
                 var versionDb = new VersionDBDataContext(strConnection);
-
-                // First check for new version
                 if (File.Exists(Settings.Default.BatchHandlerName))
                 {
                     File.Delete(Settings.Default.BatchHandlerName);
@@ -74,9 +70,6 @@ namespace ModulesLoader
 
                 PUSUpdate insPUSUpdate = new PUSUpdate();
                 Thread PUSUpdateThread = new Thread(insPUSUpdate.StartTestForUpdates);
-
-                //PUSWorker insPUSWorker = new PUSWorker();
-                //Thread PUSWorkerThread = new Thread(insPUSWorker.StartPUS);
                
                 // Start Test For Update thread.
                 PUSUpdateThread.Start();
