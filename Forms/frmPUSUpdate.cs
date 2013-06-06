@@ -31,7 +31,7 @@ namespace ModulesLoader
         private void frmPUSUpdate_Load(object sender, EventArgs e)
         {
             this.Text = "P.U.S. Sistēma atjaunošāna!!!";
-            this.lblFromToVersion.Text = "V." + MyClasses._strPUSOldVersion + " -> " + "V." + MyClasses._strPUSOldVersion;
+            this.lblFromToVersion.Text = "V." + MyClasses._strPUSOldVersion + " --> " + "V." + MyClasses._strPUSNewVersion;
             this.timeCounter.Interval = (1000) * (1);              // Timer will tick evert second
             this.timeCounter.Enabled = true;                       // Enable the timer
             this.timeCounter.Start();

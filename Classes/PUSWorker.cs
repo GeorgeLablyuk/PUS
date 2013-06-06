@@ -38,7 +38,7 @@ namespace ModulesLoader.Classes
         internal static void StartPUS()
         {
             StartPUS insStartPUS = new StartPUS();
-            insStartPUS.PusRun();
+            insStartPUS.PusRun(MyClasses.GetVersionForAnyExecutive(Settings.Default.ExecutableName));
             MyClasses._shouldStop = true;
         }
     }

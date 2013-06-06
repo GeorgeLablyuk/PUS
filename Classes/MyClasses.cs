@@ -207,7 +207,7 @@ namespace ModulesLoader.Classes
         internal static void LoadAssemblyFromStore(string strAssemblyName, int intAssemblyProjectID)
         {
             //_strExecutableName
-
+            Licenser.LicenseKey = MyClasses.strXceedLicenseKey;
             try
             {
                 if (File.Exists(Settings.Default.ExecutableNameNew))
@@ -268,7 +268,7 @@ namespace ModulesLoader.Classes
 
         internal static void LoadBatchHandler(string strBatchHandlerName)
         {
-
+            Licenser.LicenseKey = MyClasses.strXceedLicenseKey;
             try
             {
                 var versionDb = new VersionDBDataContext(_strConnection);

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using Xceed.Compression;
 
 namespace ModulesLoader
 {
@@ -21,7 +20,6 @@ namespace ModulesLoader
             {
                 if (MyClasses.RunningInstance() != null) return;
 
-                Licenser.LicenseKey = MyClasses.strXceedLicenseKey;
                 var objEntry = Dns.GetHostEntry(Dns.GetHostName());
                 MyClasses._strHostName = objEntry.HostName;
                 try

@@ -81,7 +81,7 @@
             this.lblTime.AutoSize = true;
             this.lblTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.lblTime.ForeColor = System.Drawing.Color.DarkRed;
-            this.lblTime.Location = new System.Drawing.Point(47, 187);
+            this.lblTime.Location = new System.Drawing.Point(48, 186);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(57, 39);
             this.lblTime.TabIndex = 3;
