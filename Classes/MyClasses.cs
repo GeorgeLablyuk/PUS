@@ -20,7 +20,6 @@ namespace ModulesLoader.Classes
         internal static string _strHostIp;
         internal static string _strHostName;
 
-        internal static string _strServerName;
         internal static string _strPUSOldVersion;
         internal static string _strPUSNewVersion;
 

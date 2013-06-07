@@ -16,6 +16,7 @@ namespace ModulesLoader
         [STAThread]
         private static void Main()
         {
+                string strServerName;
             try
             {
                 if (MyClasses.RunningInstance() != null) return;
@@ -36,13 +37,13 @@ namespace ModulesLoader
 
                 if (MyClasses._strHostIp.StartsWith("192.168."))
                 {
-                    MyClasses._strServerName = Settings.Default.ServerName;
+                    strServerName = Settings.Default.ServerName;
                 }
                 else
                 {
-                    MyClasses._strServerName = Settings.Default.ServerIP;
+                    strServerName = Settings.Default.ServerIP;
                 }
-                MyClasses._strServerName = Settings.Default.ServerName;
+                strServerName = Settings.Default.ServerName;
 
             }
             catch (Exception ex)
@@ -50,14 +51,14 @@ namespace ModulesLoader
                 string err = ex.Message;
                 return;
             }
-            CheckNewVersions();
+            CheckNewVersions(strServerName);
         }
 
-        private static void CheckNewVersions()
+        private static void CheckNewVersions(string strSname)
         {
             try
             {
-                MyClasses._strConnection = string.Format(MyClasses._strConnection, MyClasses._strServerName);
+                MyClasses._strConnection = string.Format(MyClasses._strConnection, strSname);
 
                 var versionDb = new VersionDBDataContext(MyClasses._strConnection);
                 if (File.Exists(Settings.Default.BatchHandlerName))
